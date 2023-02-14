@@ -5,10 +5,16 @@ services:
     ports: 
       - "8000:80"
       - "8001:443"
-    environment:
-      ASPNETCORE_URLS: "https://+;http://+"
-      ASPNETCORE_HTTPS_PORT: "8001"
-      ASPNETCORE_ENVIRONMENT: Development
+    env_file: ".env"
     volumes:
       - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
-      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/ 
+      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/
+    depends_on:
+      - db
+    command: ["dotnet", "ef", "database update"]
+
+  db:
+    image: postgres
+    env_file: ".env"
+    ports:
+      - "5432:5432"

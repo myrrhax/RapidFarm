@@ -7,7 +7,7 @@ namespace RapidFarmApi.Services
     public class WebSocketChat : WebSocketHandler
     {
         public WebSocketChat(SocketManager socketManagerService)
-            : base(socketManagerService) { }
+            : base(socketManagerService) {}
 
         public override async Task OnConnected(WebSocket socket)
         {

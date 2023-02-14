@@ -1,3 +1,4 @@
+using RapidFarmApi.Database;
 using RapidFarmApi.Extensions;
 using RapidFarmApi.Services;
 
@@ -10,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddWebSocketManager();
+builder.Services.AddDatabase();
 
 var app = builder.Build();
 
