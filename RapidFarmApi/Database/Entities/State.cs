@@ -2,9 +2,10 @@ namespace RapidFarmApi.Database.Entities
 {
     public class State : DefaultEntity
     {
-        public float Temperature {get; set;}
-        public float Light {get; set;}
-        public float Wettness {get; set;}
-        public DateTime WateringTime {get; set;}
+        public float CurrentTemperature {get; set;}
+        public float CurrentLight {get; set;}
+        public float CurrentWettness {get; set;}
+        public bool WaterPresence {get; set;}
+        public DateTime LastWateringTime {get; set;}
     }
 }

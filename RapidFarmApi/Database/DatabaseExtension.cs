@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using RapidFarmApi.Abstractions;
+using RapidFarmApi.Database.Repository;
 
 namespace RapidFarmApi.Database
 {
@@ -11,8 +13,11 @@ namespace RapidFarmApi.Database
             string dbName = Environment.GetEnvironmentVariable("POSTGRES_DB");
 
             services.AddDbContext<ApplicationDbContext>(options => {
-                options.UseNpgsql($"Host=localhost;Port=5432;Database={dbName};Username={dbUser};Password={dbPassword}");
+                options.UseNpgsql($"Host=db;Port=5432;Database={dbName};Username={dbUser};Password={dbPassword}");
             });
+
+            services.AddTransient<IStateRepository, StateRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
 
             return services;
         }

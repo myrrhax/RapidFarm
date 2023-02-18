@@ -16,7 +16,7 @@ namespace RapidFarmApi.Middlewares
 
         public async Task Invoke(HttpContext httpContext)
         {
-            if (!httpContext.WebSockets.IsWebSocketRequest)
+            if (!httpContext.WebSockets.IsWebSocketRequest || httpContext.User == null)
                 return;
 
             var socket = await httpContext.WebSockets.AcceptWebSocketAsync();

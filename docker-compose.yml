@@ -1,4 +1,9 @@
 version: "3"
+
+networks:
+  dev:
+    driver: bridge
+
 services:
   api:
     build: RapidFarmApi/
@@ -11,10 +16,14 @@ services:
       - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/
     depends_on:
       - db
-    command: ["dotnet", "ef", "database update"]
+    networks:
+      - dev
 
   db:
     image: postgres
     env_file: ".env"
+    networks:
+      - dev
     ports:
       - "5432:5432"
+
