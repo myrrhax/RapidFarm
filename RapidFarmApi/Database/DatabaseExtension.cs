@@ -16,8 +16,9 @@ namespace RapidFarmApi.Database
                 options.UseNpgsql($"Host=db;Port=5432;Database={dbName};Username={dbUser};Password={dbPassword}");
             });
 
-            services.AddTransient<IStateRepository, StateRepository>();
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddScoped<IStateRepository, StateRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IScriptsRepository, ScriptsRepository>();
 
             return services;
         }

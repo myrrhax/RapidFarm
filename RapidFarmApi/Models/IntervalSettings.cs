@@ -9,6 +9,6 @@ namespace RapidFarmApi.Models
         public float MinWetness {get; set;}
         public float MaxWetness {get; set;}
         public int WateringIntervalSec {get; set;}
-        public int EndDate {get; set;}
+        public DateTime EndDate {get; set;}
     }
 }

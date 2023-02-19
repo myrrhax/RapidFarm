@@ -1,13 +1,16 @@
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 using RapidFarmApi.Abstractions;
+using RapidFarmApi.Database.Entities;
+using RapidFarmApi.Models;
 
 namespace RapidFarmApi.Services
 {
     public class WebSocketChat : WebSocketHandler
     {
         public WebSocketChat(SocketManager socketManagerService)
-            : base(socketManagerService) {}
+            : base(socketManagerService) { }
 
         public override async Task OnConnected(WebSocket socket)
         {

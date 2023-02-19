@@ -1,9 +1,11 @@
 using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using RapidFarmApi.Abstractions;
 using RapidFarmApi.Database;
+using RapidFarmApi.Database.Entities;
 using RapidFarmApi.Database.Repository;
 using RapidFarmApi.Extensions;
 using RapidFarmApi.Models;
@@ -17,8 +19,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddWebSocketManager();
 builder.Services.AddDatabase();
+builder.Services.AddWebSocketManager();
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -55,14 +57,24 @@ app.UseWebSockets();
 
 var servicesScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
 var serviceProvider = servicesScopeFactory.CreateScope().ServiceProvider;
-/*ApplicationDbContext ctx = serviceProvider.GetRequiredService<ApplicationDbContext>();
-ctx.Ping().GetAwaiter().GetResult();
+ApplicationDbContext ctx = serviceProvider.GetRequiredService<ApplicationDbContext>();
 IUserRepository rep = serviceProvider.GetRequiredService<IUserRepository>();
-RegisterRequest req = new RegisterRequest() { UserName = "ARDUINO_CLIENT", Password="17983"};
-var user = rep.AddUserAsync(req).GetAwaiter().GetResult();
-app.Logger.LogInformation(user.Id.ToString());
-*/
-app.MapSocketMiddleware("/api/ws", serviceProvider.GetService<WebSocketChat>());
+
+if (rep.GetUserByName(Environment.GetEnvironmentVariable("ARDUINO_CLIENT_NAME")).GetAwaiter().GetResult() == null) 
+{
+    // On first start
+    RegisterRequest req = new RegisterRequest() { UserName = Environment.GetEnvironmentVariable("ARDUINO_CLIENT_NAME"),
+                                                  Password=Environment.GetEnvironmentVariable("ARDUINO_CLIENT_PASSWORD")};
+    var user = rep.AddUserAsync(req).GetAwaiter().GetResult();
+    app.Logger.LogInformation(user.Id.ToString());
+    IScriptsRepository scriptsRepository = serviceProvider.GetRequiredService<IScriptsRepository>();
+    IntervalSettings intervalOne = new IntervalSettings() { MinTemperature = 0, MaxTemperature = 0, MinWetness = 0, MaxWetness = 0, MaxLightLevel = 0, MinLightLevel = 0, WateringIntervalSec = 0, EndDate = DateTime.Now.AddYears(100)};
+    string intervalsJson = JsonSerializer.Serialize(new List<IntervalSettings>() {intervalOne});
+    PlantScript defaultPlantScript = new PlantScript() { ScriptName = "default", UserId = user.Id, IsCurrent = true, IntervalsJson = intervalsJson};
+    scriptsRepository.AddScriptAsync(defaultPlantScript).GetAwaiter().GetResult();
+} 
+
+app.MapSocketMiddleware("/api/ws", serviceProvider.GetService<WebSocketChat>(), serviceProvider.GetRequiredService<IStateRepository>(), serviceProvider.GetRequiredService<IScriptsRepository>());
 app.MapControllers()
     .RequireAuthorization();
 

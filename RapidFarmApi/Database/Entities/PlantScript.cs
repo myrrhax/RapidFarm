@@ -6,7 +6,8 @@ namespace RapidFarmApi.Database.Entities
     {
         public string ScriptName {get; set;}
         public Guid UserId {get; set;}
-        public int CurrentInterval {get; set;}
         public string IntervalsJson {get; set;}
+        public bool IsCurrent { get; set; } = false;
+        public int? currentInterval {get; set;} = null;
     }
 }

@@ -6,6 +6,7 @@ namespace RapidFarmApi.Database.Entities
         public float CurrentLight {get; set;}
         public float CurrentWettness {get; set;}
         public bool WaterPresence {get; set;}
-        public DateTime LastWateringTime {get; set;}
+        public DateTime? LastWateringTime {get; set;}
+        
     }
 }

@@ -22,6 +22,15 @@ namespace RapidFarmApi.Abstractions
             await SocketManager.RemoveSocket(SocketManager.GetSocketId(socket));
         }
 
+        public async Task SendMessageToAll(string msg) 
+        {
+            List<WebSocket> sockets = SocketManager.GetAllSockets();
+            foreach(WebSocket socket in sockets) 
+            {
+                await SendMessageAsync(socket, msg);
+            }
+        }
+
         public async Task SendRecieversMessage(WebSocket socket, string msg)
         {
             string socketId = SocketManager.GetSocketId(socket);
@@ -34,7 +43,7 @@ namespace RapidFarmApi.Abstractions
             }
         }
 
-        private async Task SendMessageAsync(WebSocket socket, string msg)
+        public async Task SendMessageAsync(WebSocket socket, string msg)
         {
             if (socket.State != WebSocketState.Open)
                 return;

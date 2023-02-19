@@ -17,6 +17,7 @@ namespace RapidFarmApi.Database.Repository
         public async Task AddState(State state)
         {
             await _db.StateList.AddAsync(state);
+            await _db.SaveChangesAsync();
         }
 
         public async Task DeleteState(Guid stateId)
@@ -24,6 +25,7 @@ namespace RapidFarmApi.Database.Repository
             State? state = await GetStateById(stateId);
             if (state != null)
                 _db.StateList.Remove(state);
+            await _db.SaveChangesAsync();
         }
 
         public Task<List<State>>? GetDayStates(DateTime time)
@@ -55,7 +57,7 @@ namespace RapidFarmApi.Database.Repository
             .ToListAsync();
         }
 
-        public Task<State>? GetLastState()
+        public Task<State?> GetLastState()
         {
             return _db.StateList.LastAsync();
         }

@@ -22,9 +22,9 @@ namespace RapidFarmApi.Services
             _sockets.TryAdd(CreateConnectionId(), socket);
         }
 
-        public ConcurrentDictionary<string, WebSocket> GetAllSockets()
+        public List<WebSocket> GetAllSockets()
         {
-            return _sockets;
+            return _sockets.Values.ToList();
         }
 
         public List<string> GetRecievers(string senderId) 

@@ -7,9 +7,11 @@ namespace RapidFarmApi.Extensions
     {
         public static IApplicationBuilder MapSocketMiddleware(this IApplicationBuilder app, 
                                                               PathString path, 
-                                                              WebSocketHandler socketHandler) 
+                                                              WebSocketHandler socketHandler,
+                                                              IStateRepository repo,
+                                                              IScriptsRepository scriptsRepository) 
         {
-            return app.Map(path, (_app) => _app.UseMiddleware<WebSocketMiddleware>(socketHandler));
+            return app.Map(path, (_app) => _app.UseMiddleware<WebSocketMiddleware>(socketHandler, repo, scriptsRepository));
         }
     }
 }
